@@ -196,26 +196,23 @@ defmodule ExBankingTest do
       assert {:ok, 20.0} == ExBanking.get_balance(username, "USD")
     end
 
-    test "ignores precision beyond 2 decimal places", %{unique_username: username} do
+    test "doesn't ignore precision beyond 2 decimal places internally", %{
+      unique_username: username
+    } do
       assert :ok == ExBanking.create_user(username)
 
-      # Check that deposit with 3 decimal places is rounded to 2
       assert {:ok, 10.12} == ExBanking.deposit(username, 10.123, "USD")
       assert {:ok, 10.12} == ExBanking.get_balance(username, "USD")
 
-      # Check that deposit with many decimal places is rounded to 2
       assert {:ok, 20.57} == ExBanking.deposit(username, 10.45678, "USD")
       assert {:ok, 20.57} == ExBanking.get_balance(username, "USD")
 
-      # Test with extremely small third decimal value (should be truncated/rounded)
-      assert {:ok, 30.57} == ExBanking.deposit(username, 10.001, "USD")
-      assert {:ok, 30.57} == ExBanking.get_balance(username, "USD")
+      assert {:ok, 30.58} == ExBanking.deposit(username, 10.001, "USD")
+      assert {:ok, 30.58} == ExBanking.get_balance(username, "USD")
 
-      # Test with extremely large third decimal value (should be truncated/rounded)
-      assert {:ok, 40.57} == ExBanking.deposit(username, 10.009, "USD")
-      assert {:ok, 40.57} == ExBanking.get_balance(username, "USD")
+      assert {:ok, 40.58} == ExBanking.deposit(username, 10.009, "USD")
+      assert {:ok, 40.58} == ExBanking.get_balance(username, "USD")
 
-      # Test deposit with excessive precision in another currency
       assert {:ok, 99.99} == ExBanking.deposit(username, 99.999999, "EUR")
       assert {:ok, 99.99} == ExBanking.get_balance(username, "EUR")
     end
@@ -317,25 +314,23 @@ defmodule ExBankingTest do
       assert {:ok, 100.25} == ExBanking.get_balance(username, "EUR")
     end
 
-    test "ignores precision beyond 2 decimal places", %{unique_username: username} do
+    test "doesn't ignore precision beyond 2 decimal places internally", %{
+      unique_username: username
+    } do
       assert :ok == ExBanking.create_user(username)
       assert {:ok, 100.0} == ExBanking.deposit(username, 100, "USD")
 
-      # Check that withdraw with 3 decimal places is rounded to 2
-      assert {:ok, 89.88} == ExBanking.withdraw(username, 10.123, "USD")
-      assert {:ok, 89.88} == ExBanking.get_balance(username, "USD")
+      assert {:ok, 89.87} == ExBanking.withdraw(username, 10.123, "USD")
+      assert {:ok, 89.87} == ExBanking.get_balance(username, "USD")
 
-      # Check that withdraw with many decimal places is rounded to 2
-      assert {:ok, 79.43} == ExBanking.withdraw(username, 10.45678, "USD")
-      assert {:ok, 79.43} == ExBanking.get_balance(username, "USD")
+      assert {:ok, 79.42} == ExBanking.withdraw(username, 10.45678, "USD")
+      assert {:ok, 79.42} == ExBanking.get_balance(username, "USD")
 
-      # Test with extremely small third decimal value (should be truncated/rounded)
-      assert {:ok, 69.43} == ExBanking.withdraw(username, 10.001, "USD")
-      assert {:ok, 69.43} == ExBanking.get_balance(username, "USD")
+      assert {:ok, 69.41} == ExBanking.withdraw(username, 10.001, "USD")
+      assert {:ok, 69.41} == ExBanking.get_balance(username, "USD")
 
-      # Test with extremely large third decimal value (should be truncated/rounded)
-      assert {:ok, 59.43} == ExBanking.withdraw(username, 10.009, "USD")
-      assert {:ok, 59.43} == ExBanking.get_balance(username, "USD")
+      assert {:ok, 59.41} == ExBanking.withdraw(username, 10.009, "USD")
+      assert {:ok, 59.41} == ExBanking.get_balance(username, "USD")
     end
 
     test "can withdraw exact full balance", %{unique_username: username} do

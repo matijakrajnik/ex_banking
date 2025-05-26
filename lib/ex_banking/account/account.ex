@@ -127,7 +127,7 @@ defmodule ExBanking.Account do
     amount = Balance.new(amount)
 
     {result, state} =
-      if current.units >= amount.units do
+      if Balance.gte?(current, amount) do
         new_balance = Balance.subtract(current, amount)
         balances = Map.put(balances, currency, new_balance)
 
